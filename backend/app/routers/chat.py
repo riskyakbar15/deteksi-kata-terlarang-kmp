@@ -1,0 +1,184 @@
+from fastapi import APIRouter, Depends, Query
+from sqlalchemy.orm import Session
+from typing import Optional
+from math import ceil
+
+from app.database import get_db
+from app.models.forbidden_word import ForbiddenWord
+from app.models.chat_message import ChatMessage
+from app.models.violation_log import ViolationLog
+from app.schemas.chat import (
+    ChatMessageRequest, ChatMessageResponse, 
+    ValidationRequest, ValidationResponse,
+    ChatMessageListResponse, DetectionResultSchema
+)
+from app.services.word_detector import WordDetector
+
+router = APIRouter(prefix="/api/chat", tags=["Chat"])
+
+
+def get_detector(db: Session) -> WordDetector:
+    """Get word detector with current forbidden words from database"""
+    words = db.query(ForbiddenWord).filter(ForbiddenWord.is_active == True).all()
+    forbidden_words = [
+        {
+            "id": w.id,
+            "word": w.word,
+            "category": w.category,
+            "severity": w.severity
+        }
+        for w in words
+    ]
+    return WordDetector(forbidden_words)
+
+
+@router.post("/validate", response_model=ValidationResponse)
+async def validate_message(
+    request: ValidationRequest,
+    db: Session = Depends(get_db)
+):
+    """
+    Validate a message for forbidden words without saving.
+    Uses KMP algorithm for efficient pattern matching.
+    """
+    detector = get_detector(db)
+    is_clean, filtered_text, violations = detector.validate_only(request.text)
+    
+    return ValidationResponse(
+        is_clean=is_clean,
+        original_text=request.text,
+        filtered_text=filtered_text,
+        violations=[
+            DetectionResultSchema(
+                word=v.word,
+                original_word=v.original_word,
+                position_start=v.position_start,
+                position_end=v.position_end,
+                severity=v.severity,
+                category=v.category,
+                forbidden_word_id=v.forbidden_word_id
+            )
+            for v in violations
+        ],
+        violation_count=len(violations)
+    )
+
+
+@router.post("/send", response_model=ChatMessageResponse)
+async def send_message(
+    request: ChatMessageRequest,
+    db: Session = Depends(get_db)
+):
+    """
+    Send a chat message with automatic forbidden word detection.
+    Message is saved and violations are logged.
+    """
+    detector = get_detector(db)
+    filtered_text, violations = detector.detect(request.text)
+    
+    # Create chat message
+    message = ChatMessage(
+        original_text=request.text,
+        filtered_text=filtered_text,
+        sender_name=request.sender_name,
+        has_violation=len(violations) > 0
+    )
+    
+    db.add(message)
+    db.commit()
+    db.refresh(message)
+    
+    # Log violations
+    for v in violations:
+        violation_log = ViolationLog(
+            message_id=message.id,
+            forbidden_word_id=v.forbidden_word_id if v.forbidden_word_id else None,
+            detected_word=v.word,
+            position_start=v.position_start,
+            position_end=v.position_end
+        )
+        db.add(violation_log)
+    
+    db.commit()
+    
+    return ChatMessageResponse(
+        id=message.id,
+        original_text=message.original_text,
+        filtered_text=message.filtered_text,
+        sender_name=message.sender_name,
+        has_violation=message.has_violation,
+        violations=[
+            DetectionResultSchema(
+                word=v.word,
+                original_word=v.original_word,
+                position_start=v.position_start,
+                position_end=v.position_end,
+                severity=v.severity,
+                category=v.category,
+                forbidden_word_id=v.forbidden_word_id
+            )
+            for v in violations
+        ],
+        created_at=message.created_at
+    )
+
+
+@router.get("/messages", response_model=ChatMessageListResponse)
+async def get_messages(
+    page: int = Query(1, ge=1),
+    page_size: int = Query(20, ge=1, le=100),
+    has_violation: Optional[bool] = None,
+    db: Session = Depends(get_db)
+):
+    """Get chat messages with pagination"""
+    query = db.query(ChatMessage)
+    
+    if has_violation is not None:
+        query = query.filter(ChatMessage.has_violation == has_violation)
+    
+    total = query.count()
+    total_pages = ceil(total / page_size) if total > 0 else 1
+    
+    offset = (page - 1) * page_size
+    messages = query.order_by(ChatMessage.created_at.desc()).offset(offset).limit(page_size).all()
+    
+    # Get violations for each message
+    result_items = []
+    for msg in messages:
+        violations = db.query(ViolationLog).filter(ViolationLog.message_id == msg.id).all()
+        
+        # Get forbidden word details for each violation
+        violation_details = []
+        for v in violations:
+            fw = db.query(ForbiddenWord).filter(ForbiddenWord.id == v.forbidden_word_id).first() if v.forbidden_word_id else None
+            violation_details.append(
+                DetectionResultSchema(
+                    word=v.detected_word,
+                    original_word=fw.word if fw else v.detected_word,
+                    position_start=v.position_start,
+                    position_end=v.position_end,
+                    severity=fw.severity if fw else 1,
+                    category=fw.category if fw else "unknown",
+                    forbidden_word_id=v.forbidden_word_id or 0
+                )
+            )
+        
+        result_items.append(
+            ChatMessageResponse(
+                id=msg.id,
+                original_text=msg.original_text,
+                filtered_text=msg.filtered_text,
+                sender_name=msg.sender_name,
+                has_violation=msg.has_violation,
+                violations=violation_details,
+                created_at=msg.created_at
+            )
+        )
+    
+    return ChatMessageListResponse(
+        items=result_items,
+        total=total,
+        page=page,
+        page_size=page_size,
+        total_pages=total_pages
+    )
