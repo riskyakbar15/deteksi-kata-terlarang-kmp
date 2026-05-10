@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, Query
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, selectinload
 from typing import Optional
 from math import ceil
 
@@ -131,7 +131,9 @@ async def get_messages(
     db: Session = Depends(get_db)
 ):
     """Get chat messages with pagination"""
-    query = db.query(ChatMessage)
+    query = db.query(ChatMessage).options(
+        selectinload(ChatMessage.violations).selectinload(ViolationLog.forbidden_word)
+    )
     
     if has_violation is not None:
         query = query.filter(ChatMessage.has_violation == has_violation)
@@ -145,12 +147,9 @@ async def get_messages(
     # Get violations for each message
     result_items = []
     for msg in messages:
-        violations = db.query(ViolationLog).filter(ViolationLog.message_id == msg.id).all()
-        
-        # Get forbidden word details for each violation
         violation_details = []
-        for v in violations:
-            fw = db.query(ForbiddenWord).filter(ForbiddenWord.id == v.forbidden_word_id).first() if v.forbidden_word_id else None
+        for v in msg.violations:
+            fw = v.forbidden_word
             violation_details.append(
                 DetectionResultSchema(
                     word=v.detected_word,
