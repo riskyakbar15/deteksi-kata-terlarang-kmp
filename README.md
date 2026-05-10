@@ -2,6 +2,10 @@
 
 Aplikasi web untuk mendeteksi kata terlarang pada pesan chat menggunakan **algoritma Knuth-Morris-Pratt (KMP)**. Proyek ini terdiri dari backend FastAPI dan frontend Next.js App Router untuk validasi pesan, penyimpanan chat, manajemen daftar kata terlarang, serta dashboard statistik.
 
+## GitHub
+
+- Repository: [riskyakbar15/Deteksi-Kata-Terlarang](https://github.com/riskyakbar15/Deteksi-Kata-Terlarang)
+
 ## Gambaran Umum
 
 Sistem ini dirancang untuk membantu moderasi percakapan secara cepat dan terstruktur. Pengguna dapat memvalidasi pesan sebelum dikirim, sementara admin dapat mengelola kata terlarang, melihat riwayat pelanggaran, dan memantau statistik penggunaan.
