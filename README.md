@@ -1,183 +1,208 @@
-# Deteksi Kata Terlarang pada Chat
+# Deteksi Kata Terlarang
 
-Aplikasi untuk mendeteksi kata-kata terlarang pada chat menggunakan **Algoritma Knuth-Morris-Pratt (KMP)**.
+Aplikasi web untuk mendeteksi kata terlarang pada pesan chat menggunakan **algoritma Knuth-Morris-Pratt (KMP)**. Proyek ini terdiri dari backend FastAPI dan frontend Next.js App Router untuk validasi pesan, penyimpanan chat, manajemen daftar kata terlarang, serta dashboard statistik.
 
-## 🚀 Fitur
+## Gambaran Umum
 
-- ✅ **Deteksi Kata Terlarang** - Menggunakan algoritma KMP dengan kompleksitas O(n+m)
-- ✅ **Penyensoran Otomatis** - Otomatis menyensor kata terlarang dengan asterisk
-- ✅ **Admin Panel** - Dashboard untuk mengelola kata terlarang
-- ✅ **Statistik Pelanggaran** - Visualisasi data pelanggaran dengan chart
-- ✅ **Autentikasi JWT** - Keamanan admin panel dengan token JWT
-- ✅ **55+ Kata Terlarang** - Data seed untuk 4 kategori
+Sistem ini dirancang untuk membantu moderasi percakapan secara cepat dan terstruktur. Pengguna dapat memvalidasi pesan sebelum dikirim, sementara admin dapat mengelola kata terlarang, melihat riwayat pelanggaran, dan memantau statistik penggunaan.
 
-## 📋 Teknologi
+## Fitur Utama
+
+- Deteksi kata terlarang menggunakan algoritma KMP dengan kompleksitas waktu $O(n+m)$.
+- Penyensoran otomatis kata yang terdeteksi.
+- Validasi pesan sebelum dikirim.
+- Penyimpanan pesan chat beserta log pelanggaran.
+- Panel admin untuk mengelola kata terlarang.
+- Statistik pelanggaran dan visualisasi data.
+- Autentikasi JWT untuk akses admin.
+- Data seed bawaan berisi 55 kata terlarang dalam 4 kategori.
+
+## Teknologi
 
 ### Backend
 
 - Python 3.11+
 - FastAPI
-- SQLAlchemy (SQLite)
-- Pydantic
-- python-jose (JWT)
-- passlib (Password Hashing)
+- SQLAlchemy
+- Pydantic dan Pydantic Settings
+- SQLite (default)
+- python-jose untuk JWT
+- passlib untuk hashing password
 
 ### Frontend
 
-- Next.js 14
+- Next.js 14 App Router
 - TypeScript
 - Tailwind CSS
-- Zustand (State Management)
-- Recharts (Charts)
+- Zustand
+- Recharts
 - Axios
 
-## 🛠️ Instalasi
+## Struktur Proyek
 
-### Prerequisites
-
-- Python 3.11+
-- Node.js 18+
-- npm atau yarn
-
-### Backend Setup
-
-```bash
-# Masuk ke direktori backend
-cd backend
-
-# Buat virtual environment
-python -m venv venv
-
-# Aktifkan virtual environment
-# Windows:
-venv\Scripts\activate
-# Linux/Mac:
-source venv/bin/activate
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Jalankan seeding database
-python -m app.seeds.seed
-
-# Jalankan server
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
-```
-
-### Frontend Setup
-
-```bash
-# Masuk ke direktori frontend
-cd frontend
-
-# Install dependencies
-npm install
-
-# Jalankan development server
-npm run dev
-```
-
-## 🔑 Login Admin
-
-Setelah seeding database:
-
-- **Username:** `admin`
-- **Password:** `admin123`
-
-⚠️ Anda akan diminta mengganti password saat login pertama kali.
-
-## 📖 API Documentation
-
-Setelah backend berjalan, akses dokumentasi API di:
-
-- [Swagger UI](http://localhost:8000/docs)
-- [ReDoc](http://localhost:8000/redoc)
-
-## 📊 Algoritma KMP
-
-Knuth-Morris-Pratt (KMP) adalah algoritma pencarian string yang efisien:
-
-### Kompleksitas
-
-- **Waktu:** O(n + m) dimana n = panjang teks, m = panjang pola
-- **Ruang:** O(m) untuk array LPS
-
-### Cara Kerja
-
-1. **Preprocessing:** Membangun array LPS (Longest Proper Prefix Suffix)
-2. **Matching:** Menggunakan LPS untuk menghindari pencocokan ulang
-
-```python
-# Contoh penggunaan
-from app.services.kmp_algorithm import KMPMatcher
-
-matcher = KMPMatcher()
-matches = matcher.search("ini adalah teks contoh", "contoh")
-# Output: [(17, 23)]  # posisi ditemukan
-```
-
-## 📂 Struktur Proyek
-
-```struktur-proyek
+```text
 deteksi-kata-terlarang/
 ├── backend/
 │   ├── app/
-│   │   ├── main.py              # Entry point FastAPI
-│   │   ├── config.py            # Konfigurasi
-│   │   ├── database.py          # Database setup
-│   │   ├── models/              # SQLAlchemy models
-│   │   ├── schemas/             # Pydantic schemas
-│   │   ├── routers/             # API routes
-│   │   ├── services/            # Business logic (KMP)
-│   │   ├── utils/               # Utilities
-│   │   └── seeds/               # Database seeding
+│   │   ├── main.py
+│   │   ├── config.py
+│   │   ├── database.py
+│   │   ├── models/
+│   │   ├── routers/
+│   │   ├── schemas/
+│   │   ├── services/
+│   │   ├── seeds/
+│   │   └── utils/
 │   └── requirements.txt
 ├── frontend/
-│   ├── src/
-│   │   ├── app/                 # Next.js pages
-│   │   ├── lib/                 # API client
-│   │   ├── store/               # Zustand store
-│   │   └── types/               # TypeScript types
+│   ├── app/
+│   │   ├── page.tsx
+│   │   ├── layout.tsx
+│   │   ├── login/
+│   │   ├── change-password/
+│   │   └── admin/
+│   ├── lib/
+│   ├── store/
+│   ├── types/
+│   ├── globals.css
 │   └── package.json
 └── README.md
 ```
 
-## 🔒 Kategori Kata Terlarang
+Catatan: frontend menggunakan struktur root App Router, jadi folder `src/` tidak digunakan lagi.
 
-| Kategori        | Deskripsi            | Severity |
-| --------------- | -------------------- | -------- |
-| `profanity`     | Kata kasar/umpatan   | 3-5      |
-| `hate_speech`   | Ujaran kebencian     | 4-5      |
-| `spam`          | Kata-kata spam/promo | 1-2      |
-| `inappropriate` | Konten tidak pantas  | 3-5      |
+## Persyaratan
 
-## 📝 API Endpoints
+- Python 3.11 atau lebih baru
+- Node.js 18 atau lebih baru
+- npm
 
-### Authentication
+## Konfigurasi Environment
 
-- `POST /api/auth/login` - Login admin
-- `GET /api/auth/me` - Get current user
-- `PUT /api/auth/change-password` - Change password
+Backend membaca konfigurasi dari file `.env` di folder `backend/`.
+
+Contoh variabel yang digunakan:
+
+- `DATABASE_URL` - koneksi database, default: `sqlite:///./forbidden_words.db`
+- `SECRET_KEY` - kunci JWT
+- `ALGORITHM` - algoritma JWT, default: `HS256`
+- `ACCESS_TOKEN_EXPIRE_MINUTES` - masa berlaku token
+- `CORS_ORIGINS` - daftar origin frontend yang diizinkan
+
+## Instalasi dan Menjalankan Aplikasi
+
+### 1. Backend
+
+```bash
+cd backend
+python -m venv venv
+```
+
+Aktifkan virtual environment:
+
+```bash
+# Windows
+venv\Scripts\activate
+
+# macOS / Linux
+source venv/bin/activate
+```
+
+Install dependensi dan jalankan seed database:
+
+```bash
+pip install -r requirements.txt
+python -m app.seeds.seed
+```
+
+Jalankan server backend:
+
+```bash
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+```
+
+### 2. Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+## Akses Aplikasi
+
+- Frontend: `http://localhost:3000`
+- Backend API: `http://localhost:8000`
+- Swagger UI: `http://localhost:8000/docs`
+- ReDoc: `http://localhost:8000/redoc`
+
+## Login Admin Default
+
+Setelah seed dijalankan, gunakan akun berikut:
+
+- Username: `admin`
+- Password: `admin123`
+
+Saat login pertama kali, sistem akan meminta penggantian password.
+
+## Fitur Backend
+
+### Autentikasi
+
+- `POST /api/auth/login` - login admin
+- `GET /api/auth/me` - informasi pengguna aktif
+- `PUT /api/auth/change-password` - ubah password
 
 ### Chat
 
-- `POST /api/chat/validate` - Validasi teks
-- `POST /api/chat/send` - Kirim dan simpan pesan
-- `GET /api/chat/messages` - Get message history
+- `POST /api/chat/validate` - validasi pesan tanpa menyimpan
+- `POST /api/chat/send` - kirim dan simpan pesan
+- `GET /api/chat/messages` - riwayat pesan chat
 
-### Forbidden Words (Admin)
+### Admin Kata Terlarang
 
-- `GET /api/admin/words` - List kata terlarang
-- `POST /api/admin/words` - Tambah kata baru
-- `PUT /api/admin/words/{id}` - Update kata
-- `DELETE /api/admin/words/{id}` - Hapus kata
+- `GET /api/admin/words` - daftar kata terlarang
+- `GET /api/admin/words/all` - daftar aktif untuk deteksi
+- `POST /api/admin/words` - tambah kata baru
+- `PUT /api/admin/words/{id}` - ubah kata
+- `DELETE /api/admin/words/{id}` - hapus kata
 
-### Statistics (Admin)
+### Statistik
 
-- `GET /api/statistics/overview` - Statistik overview
-- `GET /api/statistics/top-words` - Top kata terdeteksi
-- `GET /api/statistics/timeline` - Timeline pelanggaran
+- `GET /api/statistics/overview` - ringkasan statistik
+- `GET /api/statistics/top-words` - kata yang paling sering terdeteksi
+- `GET /api/statistics/timeline` - timeline pelanggaran
 
-## 📜 Lisensi
+## Kategori Kata Terlarang
 
-MIT License - Silakan gunakan untuk keperluan akademik dan pembelajaran.
+| Kategori        | Deskripsi               | Severity umum |
+| --------------- | ----------------------- | ------------- |
+| `profanity`     | Kata kasar atau umpatan | 3-5           |
+| `hate_speech`   | Ujaran kebencian        | 4-5           |
+| `spam`          | Kata promosi atau spam  | 1-2           |
+| `inappropriate` | Konten tidak pantas     | 3-5           |
+
+## Algoritma KMP
+
+KMP adalah algoritma pencarian string yang efisien untuk mendeteksi pola di dalam teks tanpa melakukan pencocokan ulang yang tidak perlu.
+
+### Karakteristik
+
+- Kompleksitas waktu: $O(n+m)$
+- Kompleksitas ruang: $O(m)$ untuk array LPS
+
+### Alur Kerja
+
+1. Preprocessing pola untuk membangun array LPS.
+2. Pencocokan teks menggunakan informasi dari LPS.
+3. Deteksi semua kemunculan pola secara efisien.
+
+## Catatan Pengembangan
+
+- Backend menggunakan SQLite secara default agar mudah dijalankan secara lokal.
+- Frontend menggunakan App Router dan menyimpan code bersama di root `frontend/app`, `frontend/lib`, `frontend/store`, dan `frontend/types`.
+- Jika Anda mengubah konfigurasi backend, pastikan `CORS_ORIGINS` sesuai dengan URL frontend yang digunakan.
+
+## Lisensi
+
+MIT License. Proyek ini dapat digunakan untuk pembelajaran, demonstrasi, dan pengembangan internal.
