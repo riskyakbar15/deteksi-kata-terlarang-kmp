@@ -1,14 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import {
-  MessageSquare,
-  AlertTriangle,
-  Percent,
-  BookOpen,
-  TrendingUp,
-  TrendingDown,
-} from "lucide-react";
+import { MessageSquare, AlertTriangle, Percent, BookOpen } from "lucide-react";
 import { statsApi } from "@/lib/api";
 import type { StatisticsOverview } from "@/types";
 import toast from "react-hot-toast";
