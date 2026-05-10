@@ -9,6 +9,10 @@ import {
   CheckCircle,
   Send,
   Trash2,
+  Sparkles,
+  ArrowRight,
+  ShieldCheck,
+  BrainCircuit,
 } from "lucide-react";
 import { chatApi } from "@/lib/api";
 import type { ValidationResponse, DetectionResult } from "@/types";
@@ -110,215 +114,348 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      {/* Header */}
-      <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <Shield className="h-8 w-8 text-blue-600" />
-              <div>
-                <h1 className="text-xl font-bold text-gray-900">
-                  Deteksi Kata Terlarang
-                </h1>
-                <p className="text-sm text-gray-500">
-                  Algoritma Knuth-Morris-Pratt (KMP)
-                </p>
-              </div>
+    <div className="min-h-screen text-slate-900">
+      <header className="sticky top-0 z-40 border-b border-white/30 bg-slate-950/85 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
+          <div className="flex items-center gap-3">
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-cyan-400/15 ring-1 ring-white/10">
+              <Shield className="h-6 w-6 text-cyan-300" />
             </div>
-            <Link
-              href="/login"
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
-            >
-              Admin Panel
-            </Link>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.24em] text-cyan-200/80">
+                Deteksi Kata Terlarang
+              </p>
+              <h1 className="text-lg font-semibold text-white">
+                KMP Moderation Console
+              </h1>
+            </div>
           </div>
+          <Link
+            href="/login"
+            className="inline-flex items-center gap-2 rounded-full border border-cyan-400/30 bg-cyan-400/12 px-4 py-2 text-sm font-semibold text-cyan-50 transition hover:bg-cyan-400/20"
+          >
+            Masuk Admin
+            <ArrowRight className="h-4 w-4" />
+          </Link>
         </div>
       </header>
 
-      {/* Main Content */}
-      <main className="max-w-5xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
-        {/* Info Card */}
-        <div className="bg-white rounded-xl shadow-md p-6 mb-6">
-          <div className="flex items-start space-x-4">
-            <div className="flex-shrink-0">
-              <Search className="h-6 w-6 text-blue-600" />
+      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        <section className="surface-strong overflow-hidden rounded-[2rem] border-white/50 bg-white/85 shadow-[0_30px_80px_rgba(15,23,42,0.14)]">
+          <div className="grid gap-0 lg:grid-cols-[1.1fr_0.9fr]">
+            <div className="relative overflow-hidden px-6 py-10 sm:px-10 sm:py-12 lg:px-12 lg:py-14">
+              <div className="hero-grid absolute inset-0 opacity-[0.45]" />
+              <div className="relative max-w-2xl">
+                <div className="hero-badge mb-6 inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em]">
+                  <Sparkles className="h-4 w-4 text-cyan-300" />
+                  Real-time content moderation
+                </div>
+                <h2 className="panel-title text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl">
+                  Deteksi kata terlarang dengan tampilan yang lebih bersih dan
+                  fokus.
+                </h2>
+                <p className="mt-5 max-w-xl text-base leading-7 text-slate-600 sm:text-lg">
+                  Aplikasi ini memadukan mesin deteksi KMP dengan antarmuka yang
+                  lebih nyaman dipakai untuk validasi pesan, penyimpanan chat,
+                  dan pemantauan pelanggaran.
+                </p>
+
+                <div className="mt-8 grid gap-3 sm:grid-cols-3">
+                  {[
+                    {
+                      label: "Deteksi cepat",
+                      value: "O(n + m)",
+                      icon: BrainCircuit,
+                    },
+                    {
+                      label: "Konsisten",
+                      value: "Auto censor",
+                      icon: ShieldCheck,
+                    },
+                    {
+                      label: "Pantau",
+                      value: "Dashboard admin",
+                      icon: AlertTriangle,
+                    },
+                  ].map((item) => (
+                    <div
+                      key={item.label}
+                      className="rounded-2xl border border-slate-200/70 bg-white/75 p-4 shadow-sm"
+                    >
+                      <item.icon className="h-5 w-5 text-cyan-600" />
+                      <p className="mt-3 text-sm text-slate-500">
+                        {item.label}
+                      </p>
+                      <p className="mt-1 text-lg font-semibold text-slate-900">
+                        {item.value}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
-            <div>
-              <h2 className="text-lg font-semibold text-gray-900 mb-2">
-                Tentang Algoritma KMP
-              </h2>
-              <p className="text-gray-600 text-sm">
-                Knuth-Morris-Pratt (KMP) adalah algoritma pencarian string yang
-                efisien dengan kompleksitas waktu <strong>O(n + m)</strong>,
-                dimana n adalah panjang teks dan m adalah panjang pola.
-                Algoritma ini menggunakan <em>failure function</em> (LPS array)
-                untuk menghindari pencocokan ulang karakter yang sudah diketahui
-                cocok.
-              </p>
+
+            <div className="border-t border-slate-200/80 bg-slate-950 px-6 py-10 text-white sm:px-10 lg:border-l lg:border-t-0">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-slate-400">Status sesi</p>
+                  <p className="mt-1 text-2xl font-semibold">Siap digunakan</p>
+                </div>
+                <div className="rounded-2xl bg-emerald-400/15 px-3 py-2 text-sm font-semibold text-emerald-300 ring-1 ring-emerald-300/20">
+                  Live demo
+                </div>
+              </div>
+
+              <div className="mt-8 space-y-4 rounded-[1.5rem] border border-white/10 bg-white/5 p-5">
+                <div className="flex items-center gap-3 text-sm text-slate-300">
+                  <Search className="h-5 w-5 text-cyan-300" />
+                  Validasi, kirim, lalu simpan pesan
+                </div>
+                <div className="rounded-2xl bg-slate-900/80 p-4 ring-1 ring-white/8">
+                  <p className="text-xs uppercase tracking-[0.18em] text-slate-400">
+                    Coba input
+                  </p>
+                  <p className="mt-3 text-sm leading-6 text-slate-200">
+                    "Kirim pesan yang aman, lalu lihat highlight kata yang
+                    terdeteksi secara langsung."
+                  </p>
+                </div>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div className="rounded-2xl bg-white/8 p-4 ring-1 ring-white/8">
+                    <p className="text-sm text-slate-400">Validasi</p>
+                    <p className="mt-1 text-xl font-semibold text-white">
+                      Cepat
+                    </p>
+                  </div>
+                  <div className="rounded-2xl bg-white/8 p-4 ring-1 ring-white/8">
+                    <p className="text-sm text-slate-400">Simpan</p>
+                    <p className="mt-1 text-xl font-semibold text-white">
+                      Rapi
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
+        </section>
 
-        {/* Input Section */}
-        <div className="bg-white rounded-xl shadow-md p-6 mb-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">
-            Deteksi Kata Terlarang
-          </h2>
-
-          {/* Sender Name */}
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Nama Pengirim (Opsional)
-            </label>
-            <input
-              type="text"
-              value={senderName}
-              onChange={(e) => setSenderName(e.target.value)}
-              placeholder="Anonymous"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
+        <section className="mt-8 grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
+          <div className="surface rounded-[1.75rem] p-6 sm:p-8">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-cyan-50 text-cyan-700 ring-1 ring-cyan-100">
+                <Search className="h-5 w-5" />
+              </div>
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-cyan-700">
+                  Algoritma KMP
+                </p>
+                <h3 className="mt-1 text-xl font-semibold text-slate-950">
+                  Tentang mesin deteksi
+                </h3>
+              </div>
+            </div>
+            <p className="mt-4 text-sm leading-7 text-slate-600">
+              Knuth-Morris-Pratt (KMP) adalah algoritma pencarian string yang
+              efisien dengan kompleksitas waktu <strong>O(n + m)</strong>. Cocok
+              untuk pemantauan chat karena bisa mendeteksi pola secara cepat
+              tanpa pencocokan ulang yang sia-sia.
+            </p>
+            <div className="mt-6 grid gap-3 sm:grid-cols-2">
+              {[
+                "Validasi teks sebelum dikirim",
+                "Simpan pesan dengan sensor otomatis",
+                "Dashboard statistik pelanggaran",
+                "Administrasi daftar kata terlarang",
+              ].map((item) => (
+                <div
+                  key={item}
+                  className="rounded-2xl border border-slate-200 bg-slate-50/80 px-4 py-3 text-sm text-slate-700"
+                >
+                  {item}
+                </div>
+              ))}
+            </div>
           </div>
 
-          {/* Text Input */}
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Teks Chat
-            </label>
-            <textarea
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-              placeholder="Masukkan teks yang ingin dideteksi..."
-              rows={5}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
-            />
-            <p className="text-xs text-gray-500 mt-1">{text.length} karakter</p>
+          <div className="surface rounded-[1.75rem] p-6 sm:p-8">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-cyan-700">
+                  Input pesan
+                </p>
+                <h3 className="mt-1 text-xl font-semibold text-slate-950">
+                  Coba deteksi sekarang
+                </h3>
+              </div>
+              <div className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">
+                {text.length} karakter
+              </div>
+            </div>
+
+            <div className="mt-6 space-y-5">
+              <div>
+                <label className="mb-2 block text-sm font-medium text-slate-700">
+                  Nama Pengirim (Opsional)
+                </label>
+                <input
+                  type="text"
+                  value={senderName}
+                  onChange={(e) => setSenderName(e.target.value)}
+                  placeholder="Anonymous"
+                  className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-cyan-400 focus:ring-4 focus:ring-cyan-100"
+                />
+              </div>
+
+              <div>
+                <label className="mb-2 block text-sm font-medium text-slate-700">
+                  Teks Chat
+                </label>
+                <textarea
+                  value={text}
+                  onChange={(e) => setText(e.target.value)}
+                  placeholder="Masukkan teks yang ingin dideteksi..."
+                  rows={6}
+                  className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-cyan-400 focus:ring-4 focus:ring-cyan-100"
+                />
+              </div>
+
+              <div className="flex flex-wrap gap-3">
+                <button
+                  onClick={handleValidate}
+                  disabled={isLoading || !text.trim()}
+                  className="inline-flex items-center gap-2 rounded-full bg-slate-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-300"
+                >
+                  <Search className="h-4 w-4" />
+                  <span>{isLoading ? "Memproses..." : "Validasi"}</span>
+                </button>
+
+                <button
+                  onClick={handleSend}
+                  disabled={isLoading || !text.trim()}
+                  className="inline-flex items-center gap-2 rounded-full bg-cyan-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-cyan-500 disabled:cursor-not-allowed disabled:bg-slate-300"
+                >
+                  <Send className="h-4 w-4" />
+                  <span>Kirim & Simpan</span>
+                </button>
+
+                <button
+                  onClick={handleClear}
+                  disabled={isLoading}
+                  className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  <Trash2 className="h-4 w-4" />
+                  <span>Bersihkan</span>
+                </button>
+              </div>
+            </div>
           </div>
+        </section>
 
-          {/* Buttons */}
-          <div className="flex flex-wrap gap-3">
-            <button
-              onClick={handleValidate}
-              disabled={isLoading || !text.trim()}
-              className="flex items-center space-x-2 px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors font-medium"
-            >
-              <Search className="h-4 w-4" />
-              <span>{isLoading ? "Memproses..." : "Validasi"}</span>
-            </button>
-
-            <button
-              onClick={handleSend}
-              disabled={isLoading || !text.trim()}
-              className="flex items-center space-x-2 px-6 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors font-medium"
-            >
-              <Send className="h-4 w-4" />
-              <span>Kirim & Simpan</span>
-            </button>
-
-            <button
-              onClick={handleClear}
-              disabled={isLoading}
-              className="flex items-center space-x-2 px-6 py-2.5 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors font-medium"
-            >
-              <Trash2 className="h-4 w-4" />
-              <span>Bersihkan</span>
-            </button>
-          </div>
-        </div>
-
-        {/* Result Section */}
         {result && (
-          <div className="bg-white rounded-xl shadow-md p-6">
-            <div className="flex items-center space-x-3 mb-4">
-              {result.is_clean ? (
-                <>
-                  <CheckCircle className="h-6 w-6 text-green-600" />
-                  <h2 className="text-lg font-semibold text-green-700">
-                    Teks Bersih
-                  </h2>
-                </>
-              ) : (
-                <>
-                  <AlertTriangle className="h-6 w-6 text-red-600" />
-                  <h2 className="text-lg font-semibold text-red-700">
-                    Ditemukan {result.violation_count} Kata Terlarang
-                  </h2>
-                </>
+          <section className="surface mt-8 rounded-[1.75rem] p-6 sm:p-8">
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                {result.is_clean ? (
+                  <>
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600 ring-1 ring-emerald-100">
+                      <CheckCircle className="h-6 w-6" />
+                    </div>
+                    <div>
+                      <h2 className="text-xl font-semibold text-slate-950">
+                        Teks bersih
+                      </h2>
+                      <p className="text-sm text-slate-500">
+                        Tidak ditemukan kata terlarang
+                      </p>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-rose-50 text-rose-600 ring-1 ring-rose-100">
+                      <AlertTriangle className="h-6 w-6" />
+                    </div>
+                    <div>
+                      <h2 className="text-xl font-semibold text-slate-950">
+                        Ditemukan {result.violation_count} kata terlarang
+                      </h2>
+                      <p className="text-sm text-slate-500">
+                        Detail pelanggaran dan highlight di bawah
+                      </p>
+                    </div>
+                  </>
+                )}
+              </div>
+              <div className="rounded-full bg-slate-100 px-4 py-2 text-sm font-medium text-slate-600">
+                KMP result preview
+              </div>
+            </div>
+
+            <div className="mt-6 grid gap-6 lg:grid-cols-2">
+              <div>
+                <h3 className="mb-3 text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">
+                  Teks asli
+                </h3>
+                <div
+                  className="rounded-3xl border border-slate-200 bg-slate-50/80 p-5 text-slate-800"
+                  dangerouslySetInnerHTML={{
+                    __html: highlightViolations(
+                      result.original_text,
+                      result.violations,
+                    ),
+                  }}
+                />
+              </div>
+
+              {!result.is_clean && (
+                <div>
+                  <h3 className="mb-3 text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">
+                    Teks tersensor
+                  </h3>
+                  <div className="rounded-3xl border border-emerald-200 bg-emerald-50/80 p-5 text-slate-800">
+                    {result.filtered_text}
+                  </div>
+                </div>
               )}
             </div>
 
-            {/* Original Text with Highlights */}
-            <div className="mb-4">
-              <h3 className="text-sm font-medium text-gray-700 mb-2">
-                Teks Asli (dengan highlight):
-              </h3>
-              <div
-                className="p-4 bg-gray-50 rounded-lg border border-gray-200 text-gray-800"
-                dangerouslySetInnerHTML={{
-                  __html: highlightViolations(
-                    result.original_text,
-                    result.violations,
-                  ),
-                }}
-              />
-            </div>
-
-            {/* Filtered Text */}
-            {!result.is_clean && (
-              <div className="mb-4">
-                <h3 className="text-sm font-medium text-gray-700 mb-2">
-                  Teks Tersensor:
-                </h3>
-                <div className="p-4 bg-green-50 rounded-lg border border-green-200 text-gray-800">
-                  {result.filtered_text}
-                </div>
-              </div>
-            )}
-
-            {/* Violations List */}
             {result.violations.length > 0 && (
-              <div>
-                <h3 className="text-sm font-medium text-gray-700 mb-2">
-                  Detail Pelanggaran:
+              <div className="mt-6">
+                <h3 className="mb-3 text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">
+                  Detail pelanggaran
                 </h3>
-                <div className="space-y-2">
+                <div className="space-y-3">
                   {result.violations.map((v, idx) => (
                     <div
                       key={idx}
-                      className={`flex items-center justify-between p-3 rounded-lg border ${getSeverityColor(v.severity)}`}
+                      className={`flex flex-col gap-3 rounded-2xl border px-4 py-4 sm:flex-row sm:items-center sm:justify-between ${getSeverityColor(v.severity)}`}
                     >
-                      <div className="flex items-center space-x-3">
-                        <span className="font-mono font-semibold">
-                          "{v.word}"
+                      <div className="flex items-center gap-3">
+                        <span className="rounded-full bg-white/70 px-3 py-1 font-mono text-sm font-semibold text-slate-900">
+                          {v.word}
                         </span>
-                        <span className="text-xs px-2 py-0.5 rounded-full bg-white/50">
+                        <span className="rounded-full bg-white/70 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-slate-700">
                           {getCategoryLabel(v.category)}
                         </span>
                       </div>
-                      <div className="flex items-center space-x-3 text-sm">
+                      <div className="flex items-center gap-4 text-sm font-medium text-slate-700">
                         <span>
-                          Posisi: {v.position_start}-{v.position_end}
+                          Posisi {v.position_start}-{v.position_end}
                         </span>
-                        <span className="font-medium">
-                          Severity: {v.severity}/5
-                        </span>
+                        <span>Severity {v.severity}/5</span>
                       </div>
                     </div>
                   ))}
                 </div>
               </div>
             )}
-          </div>
+          </section>
         )}
       </main>
 
-      {/* Footer */}
-      <footer className="bg-white border-t mt-12">
-        <div className="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
-          <p className="text-center text-gray-500 text-sm">
-            Deteksi Kata Terlarang © 2026 - Menggunakan Algoritma
-            Knuth-Morris-Pratt (KMP)
-          </p>
+      <footer className="border-t border-slate-200/80 bg-white/70">
+        <div className="mx-auto max-w-7xl px-4 py-6 text-center text-sm text-slate-500 sm:px-6 lg:px-8">
+          Deteksi Kata Terlarang © 2026 - Menggunakan Algoritma
+          Knuth-Morris-Pratt (KMP)
         </div>
       </footer>
     </div>

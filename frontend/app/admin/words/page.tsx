@@ -157,34 +157,43 @@ export default function WordsPage() {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Page Title */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Kata Terlarang</h1>
-          <p className="text-gray-500">Kelola daftar kata-kata yang dilarang</p>
+    <div className="space-y-6 text-slate-100">
+      <div className="surface rounded-[1.75rem] px-6 py-6 sm:px-8 sm:py-8">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-cyan-300/80">
+              Moderation list
+            </p>
+            <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-950">
+              Kata Terlarang
+            </h1>
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600 sm:text-base">
+              Kelola daftar kata, kategori, severity, dan status aktif dengan
+              tampilan yang lebih rapi.
+            </p>
+          </div>
+          <button
+            onClick={openAddModal}
+            className="inline-flex items-center gap-2 rounded-full bg-slate-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
+          >
+            <Plus className="h-5 w-5" />
+            <span>Tambah Kata</span>
+          </button>
         </div>
-        <button
-          onClick={openAddModal}
-          className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-        >
-          <Plus className="h-5 w-5" />
-          <span>Tambah Kata</span>
-        </button>
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-xl shadow-sm p-4">
+      <div className="surface rounded-[1.5rem] p-4 sm:p-5">
         <form onSubmit={handleSearch} className="flex flex-wrap gap-4">
           <div className="flex-1 min-w-[200px]">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
               <input
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Cari kata..."
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full rounded-2xl border border-slate-200 bg-white pl-10 pr-4 py-3 text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-cyan-400 focus:ring-4 focus:ring-cyan-100"
               />
             </div>
           </div>
@@ -195,7 +204,7 @@ export default function WordsPage() {
                 setCategoryFilter(e.target.value);
                 setPage(1);
               }}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 shadow-sm outline-none transition focus:border-cyan-400 focus:ring-4 focus:ring-cyan-100"
               aria-label="Filter by category"
             >
               <option value="">Semua Kategori</option>
@@ -208,7 +217,7 @@ export default function WordsPage() {
           </div>
           <button
             type="submit"
-            className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+            className="rounded-2xl border border-slate-200 bg-slate-100 px-4 py-3 text-slate-700 transition hover:bg-slate-200"
             aria-label="Filter words"
           >
             <Filter className="h-5 w-5" />
@@ -217,30 +226,30 @@ export default function WordsPage() {
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+      <div className="surface overflow-hidden rounded-[1.75rem]">
         {isLoading ? (
-          <div className="flex items-center justify-center h-64">
-            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-600"></div>
+          <div className="flex h-64 items-center justify-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-t-2 border-cyan-400"></div>
           </div>
         ) : words && words.items.length > 0 ? (
           <>
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-gray-50 border-b">
+                <thead className="border-b border-slate-200 bg-slate-50/80">
                   <tr>
-                    <th className="text-left py-3 px-4 text-sm font-medium text-gray-500">
+                    <th className="px-4 py-3 text-left text-sm font-medium text-slate-500">
                       Kata
                     </th>
-                    <th className="text-left py-3 px-4 text-sm font-medium text-gray-500">
+                    <th className="px-4 py-3 text-left text-sm font-medium text-slate-500">
                       Kategori
                     </th>
-                    <th className="text-center py-3 px-4 text-sm font-medium text-gray-500">
+                    <th className="px-4 py-3 text-center text-sm font-medium text-slate-500">
                       Severity
                     </th>
-                    <th className="text-center py-3 px-4 text-sm font-medium text-gray-500">
+                    <th className="px-4 py-3 text-center text-sm font-medium text-slate-500">
                       Status
                     </th>
-                    <th className="text-center py-3 px-4 text-sm font-medium text-gray-500">
+                    <th className="px-4 py-3 text-center text-sm font-medium text-slate-500">
                       Aksi
                     </th>
                   </tr>
@@ -249,60 +258,60 @@ export default function WordsPage() {
                   {words.items.map((word) => (
                     <tr
                       key={word.id}
-                      className="border-b last:border-0 hover:bg-gray-50"
+                      className="border-b border-slate-200/70 last:border-0 hover:bg-slate-50/70"
                     >
-                      <td className="py-3 px-4">
-                        <span className="font-medium text-gray-900">
+                      <td className="px-4 py-3">
+                        <span className="font-medium text-slate-950">
                           {word.word}
                         </span>
                       </td>
-                      <td className="py-3 px-4">
+                      <td className="px-4 py-3">
                         <span
                           className={`text-xs px-2 py-1 rounded-full ${
                             word.category === "profanity"
-                              ? "bg-red-100 text-red-700"
+                              ? "bg-rose-100 text-rose-700"
                               : word.category === "hate_speech"
                                 ? "bg-purple-100 text-purple-700"
                                 : word.category === "spam"
-                                  ? "bg-yellow-100 text-yellow-700"
-                                  : "bg-gray-100 text-gray-700"
+                                  ? "bg-amber-100 text-amber-700"
+                                  : "bg-slate-100 text-slate-700"
                           }`}
                         >
                           {categories.find((c) => c.value === word.category)
                             ?.label || word.category}
                         </span>
                       </td>
-                      <td className="py-3 px-4 text-center">
+                      <td className="px-4 py-3 text-center">
                         <span
                           className={`text-xs px-2 py-1 rounded-full font-medium ${severityColors[word.severity]}`}
                         >
                           {word.severity}/5
                         </span>
                       </td>
-                      <td className="py-3 px-4 text-center">
+                      <td className="px-4 py-3 text-center">
                         <button
                           onClick={() => handleToggleActive(word)}
                           className={`text-xs px-3 py-1 rounded-full font-medium transition-colors ${
                             word.is_active
-                              ? "bg-green-100 text-green-700 hover:bg-green-200"
-                              : "bg-gray-100 text-gray-500 hover:bg-gray-200"
+                              ? "bg-emerald-100 text-emerald-700 hover:bg-emerald-200"
+                              : "bg-slate-100 text-slate-500 hover:bg-slate-200"
                           }`}
                         >
                           {word.is_active ? "Aktif" : "Nonaktif"}
                         </button>
                       </td>
-                      <td className="py-3 px-4">
+                      <td className="px-4 py-3">
                         <div className="flex items-center justify-center space-x-2">
                           <button
                             onClick={() => openEditModal(word)}
-                            className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                            className="rounded-xl p-2 text-cyan-600 transition hover:bg-cyan-50"
                             aria-label="Edit word"
                           >
                             <Edit2 className="h-4 w-4" />
                           </button>
                           <button
                             onClick={() => setDeleteConfirm(word.id)}
-                            className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                            className="rounded-xl p-2 text-rose-600 transition hover:bg-rose-50"
                             aria-label="Delete word"
                           >
                             <Trash2 className="h-4 w-4" />
@@ -316,8 +325,8 @@ export default function WordsPage() {
             </div>
 
             {/* Pagination */}
-            <div className="flex items-center justify-between px-4 py-3 border-t">
-              <p className="text-sm text-gray-500">
+            <div className="flex items-center justify-between border-t border-slate-200 px-4 py-4">
+              <p className="text-sm text-slate-500">
                 Menampilkan {(page - 1) * 15 + 1} -{" "}
                 {Math.min(page * 15, words.total)} dari {words.total} kata
               </p>
@@ -325,12 +334,12 @@ export default function WordsPage() {
                 <button
                   onClick={() => setPage((p) => Math.max(1, p - 1))}
                   disabled={page === 1}
-                  className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="rounded-xl p-2 text-slate-600 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50"
                   aria-label="Previous page"
                 >
                   <ChevronLeft className="h-5 w-5" />
                 </button>
-                <span className="text-sm text-gray-600">
+                <span className="text-sm text-slate-600">
                   {page} / {words.total_pages}
                 </span>
                 <button
@@ -338,7 +347,7 @@ export default function WordsPage() {
                     setPage((p) => Math.min(words.total_pages, p + 1))
                   }
                   disabled={page === words.total_pages}
-                  className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="rounded-xl p-2 text-slate-600 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50"
                   aria-label="Next page"
                 >
                   <ChevronRight className="h-5 w-5" />
@@ -347,8 +356,8 @@ export default function WordsPage() {
             </div>
           </>
         ) : (
-          <div className="text-center py-12">
-            <p className="text-gray-500">Tidak ada kata terlarang ditemukan</p>
+          <div className="py-12 text-center">
+            <p className="text-slate-500">Tidak ada kata terlarang ditemukan</p>
           </div>
         )}
       </div>
@@ -359,15 +368,18 @@ export default function WordsPage() {
           className="fixed inset-0 z-50 flex items-center justify-center p-4"
           aria-label="Add or edit word modal"
         >
-          <div className="fixed inset-0 bg-black/50" onClick={closeModal} />
-          <div className="relative bg-white rounded-xl shadow-xl w-full max-w-md p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-gray-900">
+          <div
+            className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm"
+            onClick={closeModal}
+          />
+          <div className="surface relative w-full max-w-md rounded-[1.5rem] p-6">
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-slate-950">
                 {editingWord ? "Edit Kata" : "Tambah Kata Baru"}
               </h2>
               <button
                 onClick={closeModal}
-                className="p-2 hover:bg-gray-100 rounded-lg"
+                className="rounded-xl p-2 transition hover:bg-slate-100"
                 aria-label="Close add or edit word modal"
               >
                 <X className="h-5 w-5" />
@@ -376,7 +388,7 @@ export default function WordsPage() {
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="mb-1 block text-sm font-medium text-slate-700">
                   Kata
                 </label>
                 <input
@@ -386,12 +398,12 @@ export default function WordsPage() {
                     setFormData({ ...formData, word: e.target.value })
                   }
                   placeholder="Masukkan kata terlarang"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-cyan-400 focus:ring-4 focus:ring-cyan-100"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="mb-1 block text-sm font-medium text-slate-700">
                   Kategori
                 </label>
                 <select
@@ -403,7 +415,7 @@ export default function WordsPage() {
                         .value as ForbiddenWordCreate["category"],
                     })
                   }
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 shadow-sm outline-none transition focus:border-cyan-400 focus:ring-4 focus:ring-cyan-100"
                   aria-label="Select category"
                 >
                   {categories.map((cat) => (
@@ -415,7 +427,7 @@ export default function WordsPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="mb-1 block text-sm font-medium text-slate-700">
                   Severity ({formData.severity}/5)
                 </label>
                 <input
@@ -432,24 +444,24 @@ export default function WordsPage() {
                   className="w-full"
                   aria-label="Severity level"
                 />
-                <div className="flex justify-between text-xs text-gray-400 mt-1">
+                <div className="mt-1 flex justify-between text-xs text-slate-400">
                   <span>Rendah</span>
                   <span>Tinggi</span>
                 </div>
               </div>
             </div>
 
-            <div className="flex justify-end space-x-3 mt-6">
+            <div className="mt-6 flex justify-end space-x-3">
               <button
                 onClick={closeModal}
-                className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                className="rounded-full px-4 py-2 text-slate-700 transition hover:bg-slate-100"
               >
                 Batal
               </button>
               <button
                 onClick={handleSave}
                 disabled={isSaving}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 transition-colors"
+                className="rounded-full bg-slate-950 px-4 py-2 text-white transition hover:bg-slate-800 disabled:bg-slate-300"
               >
                 {isSaving ? "Menyimpan..." : "Simpan"}
               </button>
@@ -462,27 +474,27 @@ export default function WordsPage() {
       {deleteConfirm !== null && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div
-            className="fixed inset-0 bg-black/50"
+            className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm"
             onClick={() => setDeleteConfirm(null)}
           />
-          <div className="relative bg-white rounded-xl shadow-xl w-full max-w-sm p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-2">
+          <div className="surface relative w-full max-w-sm rounded-[1.5rem] p-6">
+            <h2 className="mb-2 text-lg font-semibold text-slate-950">
               Hapus Kata?
             </h2>
-            <p className="text-gray-500 mb-4">
+            <p className="mb-4 text-slate-500">
               Apakah Anda yakin ingin menghapus kata ini? Tindakan ini tidak
               dapat dibatalkan.
             </p>
             <div className="flex justify-end space-x-3">
               <button
                 onClick={() => setDeleteConfirm(null)}
-                className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                className="rounded-full px-4 py-2 text-slate-700 transition hover:bg-slate-100"
               >
                 Batal
               </button>
               <button
                 onClick={() => handleDelete(deleteConfirm)}
-                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                className="rounded-full bg-rose-600 px-4 py-2 text-white transition hover:bg-rose-500"
               >
                 Hapus
               </button>

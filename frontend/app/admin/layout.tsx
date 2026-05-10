@@ -51,36 +51,45 @@ export default function AdminLayout({
 
   if (!mounted || !isAuthenticated) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-100">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
+      <div className="min-h-screen flex items-center justify-center bg-slate-950 text-white">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-cyan-400"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-slate-950 text-slate-100">
       {/* Mobile sidebar backdrop */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/50 lg:hidden"
+          className="fixed inset-0 z-40 bg-slate-950/70 backdrop-blur-sm lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
       {/* Sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300 lg:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-50 w-72 border-r border-white/10 bg-slate-950/92 shadow-2xl backdrop-blur-xl transform transition-transform duration-300 lg:translate-x-0 ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
         {/* Logo */}
-        <div className="flex items-center justify-between h-16 px-4 border-b">
-          <Link href="/admin" className="flex items-center space-x-2">
-            <Shield className="h-8 w-8 text-blue-600" />
-            <span className="font-bold text-gray-900">Admin Panel</span>
+        <div className="flex items-center justify-between h-20 px-5 border-b border-white/10">
+          <Link href="/admin" className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-cyan-400/15 ring-1 ring-cyan-300/20">
+              <Shield className="h-6 w-6 text-cyan-300" />
+            </div>
+            <div>
+              <p className="text-[11px] uppercase tracking-[0.22em] text-cyan-200/70">
+                Moderation console
+              </p>
+              <span className="block font-semibold text-white">
+                Admin Panel
+              </span>
+            </div>
           </Link>
           <button
-            className="lg:hidden p-2 rounded-lg hover:bg-gray-100"
+            className="rounded-xl p-2 text-slate-300 transition hover:bg-white/5 hover:text-white lg:hidden"
             onClick={() => setSidebarOpen(false)}
             aria-label="Close sidebar"
           >
@@ -89,20 +98,20 @@ export default function AdminLayout({
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 px-4 py-4 space-y-1">
+        <nav className="flex-1 px-4 py-5 space-y-2">
           {navigation.map((item) => {
             const isActive = pathname === item.href;
             return (
               <Link
                 key={item.name}
                 href={item.href}
-                className={`flex items-center space-x-3 px-4 py-2.5 rounded-lg transition-colors ${
+                className={`flex items-center gap-3 rounded-2xl px-4 py-3 transition ${
                   isActive
-                    ? "bg-blue-50 text-blue-700"
-                    : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                    ? "bg-cyan-400/15 text-cyan-200 ring-1 ring-cyan-300/20"
+                    : "text-slate-300 hover:bg-white/5 hover:text-white"
                 }`}
               >
-                <item.icon className="h-5 w-5" />
+                <item.icon className="h-5 w-5 flex-shrink-0" />
                 <span className="font-medium">{item.name}</span>
               </Link>
             );
@@ -110,54 +119,56 @@ export default function AdminLayout({
         </nav>
 
         {/* User Info */}
-        <div className="border-t p-4">
-          <div className="flex items-center space-x-3 mb-3">
-            <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
-              <User className="h-5 w-5 text-blue-600" />
+        <div className="border-t border-white/10 p-4">
+          <div className="mb-4 rounded-3xl border border-white/10 bg-white/5 p-4">
+            <div className="mb-3 flex items-center gap-3">
+              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-cyan-400/15 ring-1 ring-cyan-300/20">
+                <User className="h-5 w-5 text-cyan-300" />
+              </div>
+              <div>
+                <p className="font-semibold text-white">{user?.username}</p>
+                <p className="text-xs text-slate-400">
+                  {user?.is_admin ? "Administrator" : "User"}
+                </p>
+              </div>
             </div>
-            <div>
-              <p className="font-medium text-gray-900">{user?.username}</p>
-              <p className="text-xs text-gray-500">
-                {user?.is_admin ? "Administrator" : "User"}
-              </p>
-            </div>
+            <button
+              onClick={handleLogout}
+              className="flex w-full items-center justify-center gap-2 rounded-2xl border border-rose-400/20 bg-rose-500/10 px-4 py-3 text-sm font-semibold text-rose-200 transition hover:bg-rose-500/15"
+            >
+              <LogOut className="h-5 w-5" />
+              <span>Logout</span>
+            </button>
           </div>
-          <button
-            onClick={handleLogout}
-            className="flex items-center space-x-2 w-full px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-          >
-            <LogOut className="h-5 w-5" />
-            <span>Logout</span>
-          </button>
         </div>
       </aside>
 
       {/* Main Content */}
-      <div className="lg:pl-64">
+      <div className="lg:pl-72">
         {/* Top Bar */}
-        <header className="sticky top-0 z-30 bg-white shadow-sm">
-          <div className="flex items-center justify-between h-16 px-4">
+        <header className="sticky top-0 z-30 border-b border-white/10 bg-slate-950/70 backdrop-blur-xl">
+          <div className="flex h-20 items-center justify-between px-4 sm:px-6 lg:px-8">
             <button
-              className="lg:hidden p-2 rounded-lg hover:bg-gray-100"
+              className="rounded-xl p-2 text-slate-300 transition hover:bg-white/5 hover:text-white lg:hidden"
               onClick={() => setSidebarOpen(true)}
               aria-label="Open sidebar"
             >
               <Menu className="h-6 w-6" />
             </button>
 
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center gap-3">
               <Link
                 href="/"
-                className="text-sm text-gray-600 hover:text-gray-900"
+                className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-slate-200 transition hover:bg-white/10"
               >
-                ← Kembali ke Halaman Utama
+                ← Halaman utama
               </Link>
             </div>
           </div>
         </header>
 
         {/* Page Content */}
-        <main className="p-6">{children}</main>
+        <main className="p-4 sm:p-6 lg:p-8">{children}</main>
       </div>
     </div>
   );

@@ -100,48 +100,53 @@ export default function StatisticsPage() {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Page Title */}
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900">Statistik</h1>
-        <p className="text-gray-500">
-          Analisis dan visualisasi data deteksi kata terlarang
+    <div className="space-y-6 text-slate-100">
+      <div className="surface rounded-[1.75rem] px-6 py-6 sm:px-8 sm:py-8">
+        <p className="text-xs font-semibold uppercase tracking-[0.24em] text-cyan-300/80">
+          Analytics
+        </p>
+        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-950">
+          Statistik
+        </h1>
+        <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600 sm:text-base">
+          Analisis dan visualisasi data deteksi kata terlarang dengan chart dan
+          tabel yang lebih mudah dibaca.
         </p>
       </div>
 
       {/* Overview Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-white rounded-xl shadow-sm p-6">
-          <p className="text-sm text-gray-500">Total Pesan</p>
-          <p className="text-3xl font-bold text-gray-900">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <div className="surface rounded-[1.5rem] p-6">
+          <p className="text-sm text-slate-500">Total Pesan</p>
+          <p className="text-3xl font-semibold tracking-tight text-slate-950">
             {stats.overview.total_messages}
           </p>
         </div>
-        <div className="bg-white rounded-xl shadow-sm p-6">
-          <p className="text-sm text-gray-500">Total Pelanggaran</p>
-          <p className="text-3xl font-bold text-red-600">
+        <div className="surface rounded-[1.5rem] p-6">
+          <p className="text-sm text-slate-500">Total Pelanggaran</p>
+          <p className="text-3xl font-semibold tracking-tight text-rose-600">
             {stats.overview.total_violations}
           </p>
         </div>
-        <div className="bg-white rounded-xl shadow-sm p-6">
-          <p className="text-sm text-gray-500">Tingkat Pelanggaran</p>
-          <p className="text-3xl font-bold text-orange-600">
+        <div className="surface rounded-[1.5rem] p-6">
+          <p className="text-sm text-slate-500">Tingkat Pelanggaran</p>
+          <p className="text-3xl font-semibold tracking-tight text-amber-600">
             {stats.overview.violation_rate}%
           </p>
         </div>
-        <div className="bg-white rounded-xl shadow-sm p-6">
-          <p className="text-sm text-gray-500">Kata Terlarang Aktif</p>
-          <p className="text-3xl font-bold text-blue-600">
+        <div className="surface rounded-[1.5rem] p-6">
+          <p className="text-sm text-slate-500">Kata Terlarang Aktif</p>
+          <p className="text-3xl font-semibold tracking-tight text-cyan-600">
             {stats.overview.active_forbidden_words}
           </p>
         </div>
       </div>
 
       {/* Charts Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
         {/* Top Words Bar Chart */}
-        <div className="bg-white rounded-xl shadow-sm p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">
+        <div className="surface rounded-[1.75rem] p-6 sm:p-8">
+          <h2 className="panel-title mb-4 text-lg font-semibold text-slate-950">
             Top 10 Kata Terdeteksi
           </h2>
           {stats.top_words.length > 0 ? (
@@ -150,9 +155,9 @@ export default function StatisticsPage() {
                 <BarChart
                   data={stats.top_words}
                   layout="vertical"
-                  margin={{ top: 5, right: 30, left: 80, bottom: 5 }}
+                  margin={{ top: 5, right: 20, left: 88, bottom: 5 }}
                 >
-                  <CartesianGrid strokeDasharray="3 3" />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
                   <XAxis type="number" />
                   <YAxis dataKey="word" type="category" />
                   <Tooltip
@@ -160,15 +165,17 @@ export default function StatisticsPage() {
                       if (active && payload && payload.length) {
                         const data = payload[0].payload as WordFrequency;
                         return (
-                          <div className="bg-white p-3 shadow-lg rounded-lg border">
-                            <p className="font-semibold">{data.word}</p>
-                            <p className="text-sm text-gray-500">
+                          <div className="rounded-2xl border border-slate-200 bg-white p-3 shadow-xl">
+                            <p className="font-semibold text-slate-950">
+                              {data.word}
+                            </p>
+                            <p className="text-sm text-slate-500">
                               Kategori: {getCategoryLabel(data.category)}
                             </p>
-                            <p className="text-sm text-gray-500">
+                            <p className="text-sm text-slate-500">
                               Jumlah: {data.count}
                             </p>
-                            <p className="text-sm text-gray-500">
+                            <p className="text-sm text-slate-500">
                               Severity: {data.severity}/5
                             </p>
                           </div>
@@ -182,15 +189,15 @@ export default function StatisticsPage() {
               </ResponsiveContainer>
             </div>
           ) : (
-            <div className="h-80 flex items-center justify-center text-gray-500">
+            <div className="h-80 flex items-center justify-center text-slate-500">
               Belum ada data
             </div>
           )}
         </div>
 
         {/* Category Distribution Pie Chart */}
-        <div className="bg-white rounded-xl shadow-sm p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">
+        <div className="surface rounded-[1.75rem] p-6 sm:p-8">
+          <h2 className="panel-title mb-4 text-lg font-semibold text-slate-950">
             Distribusi Kategori
           </h2>
           {categoryData.length > 0 ? (
@@ -205,7 +212,7 @@ export default function StatisticsPage() {
                     label={({ category, percent }) =>
                       `${getCategoryLabel(category)} (${(percent * 100).toFixed(0)}%)`
                     }
-                    outerRadius={100}
+                    outerRadius={104}
                     fill="#8884d8"
                     dataKey="count"
                   >
@@ -224,11 +231,11 @@ export default function StatisticsPage() {
                       if (active && payload && payload.length) {
                         const data = payload[0].payload;
                         return (
-                          <div className="bg-white p-3 shadow-lg rounded-lg border">
-                            <p className="font-semibold">
+                          <div className="rounded-2xl border border-slate-200 bg-white p-3 shadow-xl">
+                            <p className="font-semibold text-slate-950">
                               {getCategoryLabel(data.category)}
                             </p>
-                            <p className="text-sm text-gray-500">
+                            <p className="text-sm text-slate-500">
                               Jumlah: {data.count}
                             </p>
                           </div>
@@ -241,7 +248,7 @@ export default function StatisticsPage() {
               </ResponsiveContainer>
             </div>
           ) : (
-            <div className="h-80 flex items-center justify-center text-gray-500">
+            <div className="h-80 flex items-center justify-center text-slate-500">
               Belum ada data
             </div>
           )}
@@ -249,8 +256,8 @@ export default function StatisticsPage() {
       </div>
 
       {/* Timeline Chart */}
-      <div className="bg-white rounded-xl shadow-sm p-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">
+      <div className="surface rounded-[1.75rem] p-6 sm:p-8">
+        <h2 className="panel-title mb-4 text-lg font-semibold text-slate-950">
           Aktivitas 7 Hari Terakhir
         </h2>
         {stats.timeline.length > 0 ? (
@@ -260,7 +267,7 @@ export default function StatisticsPage() {
                 data={stats.timeline}
                 margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
               >
-                <CartesianGrid strokeDasharray="3 3" />
+                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
                 <XAxis
                   dataKey="date"
                   tickFormatter={(value) => {
@@ -304,32 +311,32 @@ export default function StatisticsPage() {
             </ResponsiveContainer>
           </div>
         ) : (
-          <div className="h-80 flex items-center justify-center text-gray-500">
+          <div className="h-80 flex items-center justify-center text-slate-500">
             Belum ada data
           </div>
         )}
       </div>
 
       {/* Recent Violations Table */}
-      <div className="bg-white rounded-xl shadow-sm p-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">
+      <div className="surface rounded-[1.75rem] p-6 sm:p-8">
+        <h2 className="panel-title mb-4 text-lg font-semibold text-slate-950">
           Pelanggaran Terbaru
         </h2>
         {stats.recent_violations.length > 0 ? (
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-50 border-b">
+              <thead className="border-b border-slate-200 bg-slate-50/80">
                 <tr>
-                  <th className="text-left py-3 px-4 text-sm font-medium text-gray-500">
+                  <th className="px-4 py-3 text-left text-sm font-medium text-slate-500">
                     Kata
                   </th>
-                  <th className="text-left py-3 px-4 text-sm font-medium text-gray-500">
+                  <th className="px-4 py-3 text-left text-sm font-medium text-slate-500">
                     Pengirim
                   </th>
-                  <th className="text-left py-3 px-4 text-sm font-medium text-gray-500">
+                  <th className="px-4 py-3 text-left text-sm font-medium text-slate-500">
                     Preview Pesan
                   </th>
-                  <th className="text-left py-3 px-4 text-sm font-medium text-gray-500">
+                  <th className="px-4 py-3 text-left text-sm font-medium text-slate-500">
                     Waktu
                   </th>
                 </tr>
@@ -338,20 +345,20 @@ export default function StatisticsPage() {
                 {stats.recent_violations.map((violation) => (
                   <tr
                     key={violation.id}
-                    className="border-b last:border-0 hover:bg-gray-50"
+                    className="border-b border-slate-200/70 last:border-0 hover:bg-slate-50/70"
                   >
-                    <td className="py-3 px-4">
-                      <span className="font-medium text-red-600">
+                    <td className="px-4 py-3">
+                      <span className="font-medium text-rose-600">
                         "{violation.detected_word}"
                       </span>
                     </td>
-                    <td className="py-3 px-4 text-gray-900">
+                    <td className="px-4 py-3 text-slate-900">
                       {violation.sender_name}
                     </td>
-                    <td className="py-3 px-4 text-gray-500 max-w-xs truncate">
+                    <td className="max-w-xs px-4 py-3 truncate text-slate-500">
                       {violation.message_preview}
                     </td>
-                    <td className="py-3 px-4 text-gray-500 text-sm">
+                    <td className="px-4 py-3 text-sm text-slate-500">
                       {new Date(violation.created_at).toLocaleString("id-ID")}
                     </td>
                   </tr>
@@ -360,7 +367,7 @@ export default function StatisticsPage() {
             </table>
           </div>
         ) : (
-          <div className="text-center py-8 text-gray-500">
+          <div className="py-8 text-center text-slate-500">
             Belum ada pelanggaran
           </div>
         )}

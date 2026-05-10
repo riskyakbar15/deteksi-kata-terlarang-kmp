@@ -73,33 +73,37 @@ export default function AdminDashboard() {
   ];
 
   return (
-    <div className="space-y-6">
-      {/* Page Title */}
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-        <p className="text-gray-500">
-          Ringkasan statistik deteksi kata terlarang
+    <div className="space-y-6 text-slate-100">
+      <div className="surface rounded-[1.75rem] px-6 py-6 sm:px-8 sm:py-8">
+        <p className="text-xs font-semibold uppercase tracking-[0.24em] text-cyan-300/80">
+          Overview
+        </p>
+        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-950">
+          Dashboard
+        </h1>
+        <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600 sm:text-base">
+          Ringkasan statistik deteksi kata terlarang, pelanggaran terbaru, dan
+          pola aktivitas selama tujuh hari terakhir.
         </p>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
         {statCards.map((stat, idx) => (
-          <div
-            key={idx}
-            className="bg-white rounded-xl shadow-sm p-6 card-hover"
-          >
-            <div className="flex items-center justify-between">
+          <div key={idx} className="surface card-hover rounded-[1.5rem] p-6">
+            <div className="flex items-start justify-between gap-4">
               <div>
-                <p className="text-sm font-medium text-gray-500">
+                <p className="text-sm font-medium text-slate-500">
                   {stat.title}
                 </p>
-                <p className="text-2xl font-bold text-gray-900 mt-1">
+                <p className="mt-1 text-3xl font-semibold tracking-tight text-slate-950">
                   {stat.value}
                 </p>
-                <p className="text-xs text-gray-400 mt-1">{stat.subtext}</p>
+                <p className="mt-1 text-xs text-slate-500">{stat.subtext}</p>
               </div>
-              <div className={`${stat.color} p-3 rounded-lg`}>
+              <div
+                className={`${stat.color} flex h-12 w-12 items-center justify-center rounded-2xl shadow-sm ring-1 ring-black/5`}
+              >
                 <stat.icon className="h-6 w-6 text-white" />
               </div>
             </div>
@@ -108,10 +112,10 @@ export default function AdminDashboard() {
       </div>
 
       {/* Two Column Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
         {/* Top Words */}
-        <div className="bg-white rounded-xl shadow-sm p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">
+        <div className="surface rounded-[1.75rem] p-6 sm:p-8">
+          <h2 className="panel-title mb-4 text-lg font-semibold text-slate-950">
             Top 10 Kata Terdeteksi
           </h2>
           {stats.top_words.length > 0 ? (
@@ -119,13 +123,13 @@ export default function AdminDashboard() {
               {stats.top_words.map((word, idx) => (
                 <div
                   key={idx}
-                  className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                  className="flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50/80 p-4"
                 >
                   <div className="flex items-center space-x-3">
-                    <span className="text-sm font-bold text-gray-400 w-6">
+                    <span className="w-6 text-sm font-bold text-slate-400">
                       #{idx + 1}
                     </span>
-                    <span className="font-medium text-gray-900">
+                    <span className="font-medium text-slate-900">
                       {word.word}
                     </span>
                     <span
@@ -135,52 +139,55 @@ export default function AdminDashboard() {
                           : word.category === "hate_speech"
                             ? "bg-purple-100 text-purple-700"
                             : word.category === "spam"
-                              ? "bg-yellow-100 text-yellow-700"
-                              : "bg-gray-100 text-gray-700"
+                              ? "bg-amber-100 text-amber-700"
+                              : "bg-slate-100 text-slate-700"
                       }`}
                     >
                       {word.category}
                     </span>
                   </div>
-                  <span className="text-lg font-bold text-gray-900">
+                  <span className="text-lg font-bold text-slate-950">
                     {word.count}
                   </span>
                 </div>
               ))}
             </div>
           ) : (
-            <p className="text-center text-gray-500 py-8">Belum ada data</p>
+            <p className="py-8 text-center text-slate-500">Belum ada data</p>
           )}
         </div>
 
         {/* Recent Violations */}
-        <div className="bg-white rounded-xl shadow-sm p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">
+        <div className="surface rounded-[1.75rem] p-6 sm:p-8">
+          <h2 className="panel-title mb-4 text-lg font-semibold text-slate-950">
             Pelanggaran Terbaru
           </h2>
           {stats.recent_violations.length > 0 ? (
             <div className="space-y-3">
               {stats.recent_violations.map((violation) => (
-                <div key={violation.id} className="p-3 bg-gray-50 rounded-lg">
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="font-medium text-red-600">
+                <div
+                  key={violation.id}
+                  className="rounded-2xl border border-slate-200 bg-slate-50/80 p-4"
+                >
+                  <div className="mb-1 flex items-center justify-between gap-3">
+                    <span className="font-medium text-rose-600">
                       "{violation.detected_word}"
                     </span>
-                    <span className="text-xs text-gray-400">
+                    <span className="text-xs text-slate-400">
                       {new Date(violation.created_at).toLocaleString("id-ID")}
                     </span>
                   </div>
-                  <p className="text-sm text-gray-600 truncate">
+                  <p className="truncate text-sm text-slate-600">
                     {violation.message_preview}
                   </p>
-                  <p className="text-xs text-gray-400 mt-1">
+                  <p className="mt-1 text-xs text-slate-400">
                     oleh {violation.sender_name}
                   </p>
                 </div>
               ))}
             </div>
           ) : (
-            <p className="text-center text-gray-500 py-8">
+            <p className="py-8 text-center text-slate-500">
               Belum ada pelanggaran
             </p>
           )}
@@ -188,24 +195,24 @@ export default function AdminDashboard() {
       </div>
 
       {/* Timeline */}
-      <div className="bg-white rounded-xl shadow-sm p-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">
+      <div className="surface rounded-[1.75rem] p-6 sm:p-8">
+        <h2 className="panel-title mb-4 text-lg font-semibold text-slate-950">
           Aktivitas 7 Hari Terakhir
         </h2>
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b">
-                <th className="text-left py-3 px-4 text-sm font-medium text-gray-500">
+              <tr className="border-b border-slate-200">
+                <th className="px-4 py-3 text-left text-sm font-medium text-slate-500">
                   Tanggal
                 </th>
-                <th className="text-right py-3 px-4 text-sm font-medium text-gray-500">
+                <th className="px-4 py-3 text-right text-sm font-medium text-slate-500">
                   Pesan
                 </th>
-                <th className="text-right py-3 px-4 text-sm font-medium text-gray-500">
+                <th className="px-4 py-3 text-right text-sm font-medium text-slate-500">
                   Pelanggaran
                 </th>
-                <th className="text-right py-3 px-4 text-sm font-medium text-gray-500">
+                <th className="px-4 py-3 text-right text-sm font-medium text-slate-500">
                   Rate
                 </th>
               </tr>
@@ -219,30 +226,30 @@ export default function AdminDashboard() {
                 return (
                   <tr
                     key={idx}
-                    className="border-b last:border-0 hover:bg-gray-50"
+                    className="border-b border-slate-200/70 last:border-0 hover:bg-slate-50/70"
                   >
-                    <td className="py-3 px-4 text-sm text-gray-900">
+                    <td className="px-4 py-3 text-sm text-slate-900">
                       {new Date(day.date).toLocaleDateString("id-ID", {
                         weekday: "short",
                         day: "numeric",
                         month: "short",
                       })}
                     </td>
-                    <td className="py-3 px-4 text-sm text-right text-gray-900">
+                    <td className="px-4 py-3 text-right text-sm text-slate-900">
                       {day.messages}
                     </td>
-                    <td className="py-3 px-4 text-sm text-right">
+                    <td className="px-4 py-3 text-right text-sm">
                       <span
                         className={
                           day.violations > 0
-                            ? "text-red-600 font-medium"
-                            : "text-gray-400"
+                            ? "font-medium text-rose-600"
+                            : "text-slate-400"
                         }
                       >
                         {day.violations}
                       </span>
                     </td>
-                    <td className="py-3 px-4 text-sm text-right text-gray-500">
+                    <td className="px-4 py-3 text-right text-sm text-slate-500">
                       {rate}%
                     </td>
                   </tr>
