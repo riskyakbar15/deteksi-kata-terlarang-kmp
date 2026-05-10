@@ -103,7 +103,7 @@ export default function HomePage() {
       const before = result.slice(0, v.position_start);
       const word = result.slice(v.position_start, v.position_end);
       const after = result.slice(v.position_end);
-      result = `${before}<mark class="highlight-violation">${word}</mark>${after}`;
+      result = `${before}<mark className="highlight-violation">${word}</mark>${after}`;
     }
 
     return result;
