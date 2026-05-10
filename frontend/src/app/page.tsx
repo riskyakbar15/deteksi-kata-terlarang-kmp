@@ -55,7 +55,7 @@ export default function HomePage() {
       setResult({
         is_clean: !response.has_violation,
         original_text: response.original_text,
-        filtered_text: response.filtered_text,
+        filtered_text: response.filtered_text ?? response.original_text,
         violations: response.violations,
         violation_count: response.violations.length,
       });

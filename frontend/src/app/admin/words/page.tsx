@@ -12,7 +12,12 @@ import {
   Filter,
 } from "lucide-react";
 import { wordsApi } from "@/lib/api";
-import type { ForbiddenWord, PaginatedResponse } from "@/types";
+import type {
+  ForbiddenWord,
+  ForbiddenWordCreate,
+  ForbiddenWordUpdate,
+  PaginatedResponse,
+} from "@/types";
 import toast from "react-hot-toast";
 
 const categories = [
@@ -42,7 +47,7 @@ export default function WordsPage() {
   // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingWord, setEditingWord] = useState<ForbiddenWord | null>(null);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<ForbiddenWordCreate>({
     word: "",
     category: "profanity",
     severity: 3,
@@ -110,7 +115,12 @@ export default function WordsPage() {
     setIsSaving(true);
     try {
       if (editingWord) {
-        await wordsApi.update(editingWord.id, formData);
+        const updatePayload: ForbiddenWordUpdate = {
+          word: formData.word,
+          category: formData.category,
+          severity: formData.severity,
+        };
+        await wordsApi.update(editingWord.id, updatePayload);
         toast.success("Kata berhasil diperbarui");
       } else {
         await wordsApi.create(formData);
@@ -387,7 +397,11 @@ export default function WordsPage() {
                 <select
                   value={formData.category}
                   onChange={(e) =>
-                    setFormData({ ...formData, category: e.target.value })
+                    setFormData({
+                      ...formData,
+                      category: e.target
+                        .value as ForbiddenWordCreate["category"],
+                    })
                   }
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   aria-label="Select category"
