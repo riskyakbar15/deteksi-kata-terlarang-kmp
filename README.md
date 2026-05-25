@@ -207,6 +207,6 @@ KMP adalah algoritma pencarian string yang efisien untuk mendeteksi pola di dala
 - Frontend menggunakan App Router dan menyimpan code bersama di root `frontend/app`, `frontend/lib`, `frontend/store`, dan `frontend/types`.
 - Jika Anda mengubah konfigurasi backend, pastikan `CORS_ORIGINS` sesuai dengan URL frontend yang digunakan.
 
-## Lisensi
+---
 
-MIT License. Proyek ini dapat digunakan untuk pembelajaran, demonstrasi, dan pengembangan internal.
+Made With ❤️ By [riskyakbar15](https://github.com/riskyakbar15) For Education.
