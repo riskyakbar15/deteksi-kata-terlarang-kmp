@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 from sqlalchemy import func, desc
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import List
 
 from app.database import get_db
@@ -31,7 +31,7 @@ async def get_statistics_overview(
     active_words = db.query(ForbiddenWord).filter(ForbiddenWord.is_active == True).count()
     
     # Today's stats
-    today_start = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
+    today_start = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
     messages_today = db.query(ChatMessage).filter(ChatMessage.created_at >= today_start).count()
     violations_today = db.query(ViolationLog).filter(ViolationLog.created_at >= today_start).count()
     
@@ -74,7 +74,7 @@ async def get_statistics_overview(
     # Timeline data (last 7 days)
     timeline = []
     for i in range(6, -1, -1):
-        date = datetime.utcnow().date() - timedelta(days=i)
+        date = datetime.now(timezone.utc).date() - timedelta(days=i)
         date_start = datetime.combine(date, datetime.min.time())
         date_end = datetime.combine(date, datetime.max.time())
         
