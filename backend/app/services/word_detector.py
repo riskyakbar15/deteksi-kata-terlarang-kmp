@@ -24,23 +24,45 @@ class WordDetector:
     detected words by replacing them with asterisks.
     """
     
-    def __init__(self, forbidden_words: List[Dict[str, Any]] = None):
+    def __init__(self, forbidden_words: List[Dict[str, Any]] = None, word_boundary: bool = True):
         """
         Initialize the detector with a list of forbidden words.
-        
+
         Args:
             forbidden_words: List of dictionaries containing:
                 - id: Word ID
                 - word: The forbidden word
                 - category: Word category
                 - severity: Severity level (1-5)
+            word_boundary: When True, only match forbidden words that stand as
+                whole words (bounded by non-alphanumeric characters or the edges
+                of the text). This avoids false positives such as detecting
+                "las" inside "kelas".
         """
         self.forbidden_words = forbidden_words or []
+        self.word_boundary = word_boundary
         self.matcher = KMPMatcher()
-    
+
     def set_forbidden_words(self, forbidden_words: List[Dict[str, Any]]):
         """Update the list of forbidden words"""
         self.forbidden_words = forbidden_words
+
+    @staticmethod
+    def _is_word_char(char: str) -> bool:
+        """A character is part of a word if it is alphanumeric or an underscore."""
+        return char.isalnum() or char == "_"
+
+    def _is_whole_word(self, text: str, start: int, end: int) -> bool:
+        """
+        Check whether the match at [start, end) is bounded by word boundaries.
+
+        A boundary exists when the neighbouring character is not a word
+        character, or when the match sits at the very start/end of the text.
+        """
+        before_ok = start == 0 or not self._is_word_char(text[start - 1])
+        after_ok = end >= len(text) or not self._is_word_char(text[end])
+        return before_ok and after_ok
+
     
     def detect(self, text: str) -> Tuple[str, List[DetectionResult]]:
         """
@@ -79,6 +101,10 @@ class WordDetector:
             matches = self.matcher.search(text, word, case_insensitive=True)
             
             for start, end in matches:
+                # Skip matches that are part of a larger word (e.g. "las" in "kelas")
+                if self.word_boundary and not self._is_whole_word(text, start, end):
+                    continue
+
                 # Check if this position overlaps with an already matched position
                 position_range = set(range(start, end))
                 if not position_range.intersection(matched_positions):
