@@ -1,5 +1,14 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 from typing import Optional
+
+
+def _validate_password_strength(value: str) -> str:
+    """Ensure passwords contain at least one letter and one digit."""
+    if not any(c.isalpha() for c in value):
+        raise ValueError("Password must contain at least one letter")
+    if not any(c.isdigit() for c in value):
+        raise ValueError("Password must contain at least one digit")
+    return value
 
 
 class UserBase(BaseModel):
@@ -8,7 +17,12 @@ class UserBase(BaseModel):
 
 
 class UserCreate(UserBase):
-    password: str = Field(..., min_length=6)
+    password: str = Field(..., min_length=8, max_length=128)
+
+    @field_validator("password")
+    @classmethod
+    def validate_password(cls, value: str) -> str:
+        return _validate_password_strength(value)
 
 
 class UserLogin(BaseModel):
@@ -28,7 +42,12 @@ class UserResponse(UserBase):
 
 class ChangePassword(BaseModel):
     current_password: str
-    new_password: str = Field(..., min_length=6)
+    new_password: str = Field(..., min_length=8, max_length=128)
+
+    @field_validator("new_password")
+    @classmethod
+    def validate_new_password(cls, value: str) -> str:
+        return _validate_password_strength(value)
 
 
 class Token(BaseModel):
