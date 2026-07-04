@@ -11,11 +11,45 @@ from app.schemas.user import (
 )
 from app.utils.security import (
     verify_password, get_password_hash, create_access_token,
-    get_current_active_user
+    get_current_active_user, get_current_admin_user
 )
 from app.config import settings
 
 router = APIRouter(prefix="/api/auth", tags=["Authentication"])
+
+
+def _authenticate_user(db: Session, username: str, password: str) -> User:
+    """Validate credentials and return the user, or raise 401."""
+    user = db.query(User).filter(User.username == username).first()
+
+    if not user or not verify_password(password, user.hashed_password):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect username or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    if not user.is_active:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="User account is disabled"
+        )
+
+    return user
+
+
+def _issue_login_response(user: User) -> LoginResponse:
+    """Create a JWT access token and build the login response."""
+    access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": user.username},
+        expires_delta=access_token_expires
+    )
+    return LoginResponse(
+        access_token=access_token,
+        token_type="bearer",
+        user=UserResponse.model_validate(user)
+    )
 
 
 @router.post("/login", response_model=LoginResponse)
@@ -27,32 +61,8 @@ async def login(
     Login endpoint for admin users.
     Returns JWT access token.
     """
-    user = db.query(User).filter(User.username == form_data.username).first()
-    
-    if not user or not verify_password(form_data.password, user.hashed_password):
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect username or password",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-    
-    if not user.is_active:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="User account is disabled"
-        )
-    
-    access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(
-        data={"sub": user.username},
-        expires_delta=access_token_expires
-    )
-    
-    return LoginResponse(
-        access_token=access_token,
-        token_type="bearer",
-        user=UserResponse.model_validate(user)
-    )
+    user = _authenticate_user(db, form_data.username, form_data.password)
+    return _issue_login_response(user)
 
 
 @router.post("/login/json", response_model=LoginResponse)
@@ -64,32 +74,8 @@ async def login_json(
     Login endpoint for admin users (JSON body).
     Returns JWT access token.
     """
-    user = db.query(User).filter(User.username == login_data.username).first()
-    
-    if not user or not verify_password(login_data.password, user.hashed_password):
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect username or password",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-    
-    if not user.is_active:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="User account is disabled"
-        )
-    
-    access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(
-        data={"sub": user.username},
-        expires_delta=access_token_expires
-    )
-    
-    return LoginResponse(
-        access_token=access_token,
-        token_type="bearer",
-        user=UserResponse.model_validate(user)
-    )
+    user = _authenticate_user(db, login_data.username, login_data.password)
+    return _issue_login_response(user)
 
 
 @router.get("/me", response_model=UserResponse)
@@ -134,14 +120,14 @@ async def change_password(
     return current_user
 
 
-@router.post("/register", response_model=UserResponse)
+@router.post("/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
 async def register_user(
     user_data: UserCreate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_admin_user)
 ):
     """
-    Register a new user (admin only in production).
-    For demo purposes, this endpoint is open.
+    Register a new user. Restricted to authenticated admins.
     """
     # Check if username already exists
     existing_user = db.query(User).filter(User.username == user_data.username).first()

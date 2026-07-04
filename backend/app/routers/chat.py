@@ -7,12 +7,14 @@ from app.database import get_db
 from app.models.forbidden_word import ForbiddenWord
 from app.models.chat_message import ChatMessage
 from app.models.violation_log import ViolationLog
+from app.models.user import User
 from app.schemas.chat import (
     ChatMessageRequest, ChatMessageResponse, 
     ValidationRequest, ValidationResponse,
     ChatMessageListResponse, DetectionResultSchema
 )
 from app.services.word_detector import WordDetector
+from app.utils.security import get_current_admin_user
 
 router = APIRouter(prefix="/api/chat", tags=["Chat"])
 
@@ -128,9 +130,10 @@ async def get_messages(
     page: int = Query(1, ge=1),
     page_size: int = Query(20, ge=1, le=100),
     has_violation: Optional[bool] = None,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_admin_user)
 ):
-    """Get chat messages with pagination"""
+    """Get chat messages with pagination (admin only)."""
     query = db.query(ChatMessage).options(
         selectinload(ChatMessage.violations).selectinload(ViolationLog.forbidden_word)
     )

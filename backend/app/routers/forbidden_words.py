@@ -57,11 +57,12 @@ async def get_forbidden_words(
 
 @router.get("/all", response_model=list[ForbiddenWordResponse])
 async def get_all_forbidden_words(
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_admin_user)
 ):
     """
     Get all active forbidden words (for detection service).
-    This endpoint is public for the chat detection feature.
+    Restricted to admins so the forbidden-word list is not publicly exposed.
     """
     words = db.query(ForbiddenWord).filter(ForbiddenWord.is_active == True).all()
     return [ForbiddenWordResponse.model_validate(w) for w in words]
