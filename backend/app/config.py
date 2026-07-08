@@ -1,6 +1,6 @@
 import secrets
 import warnings
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 # Sentinel default. If this value is still in use at runtime it means no
@@ -25,9 +25,7 @@ class Settings(BaseSettings):
     # CORS
     CORS_ORIGINS: list = ["http://localhost:3000", "http://127.0.0.1:3000"]
 
-    class Config:
-        env_file = ".env"
-        case_sensitive = True
+    model_config = SettingsConfigDict(env_file=".env", case_sensitive=True)
 
     def model_post_init(self, __context) -> None:
         """Fail fast in production if the SECRET_KEY was not overridden."""
