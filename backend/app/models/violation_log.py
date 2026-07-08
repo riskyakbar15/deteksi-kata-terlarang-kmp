@@ -1,7 +1,11 @@
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
-from datetime import datetime
+from datetime import datetime, timezone
 from app.database import Base
+
+
+def _utcnow():
+    return datetime.now(timezone.utc)
 
 
 class ViolationLog(Base):
@@ -9,12 +13,12 @@ class ViolationLog(Base):
     __tablename__ = "violation_logs"
     
     id = Column(Integer, primary_key=True, index=True)
-    message_id = Column(Integer, ForeignKey("chat_messages.id"), nullable=False)
-    forbidden_word_id = Column(Integer, ForeignKey("forbidden_words.id"), nullable=True)
+    message_id = Column(Integer, ForeignKey("chat_messages.id"), nullable=False, index=True)
+    forbidden_word_id = Column(Integer, ForeignKey("forbidden_words.id"), nullable=True, index=True)
     detected_word = Column(String(100), nullable=False)
     position_start = Column(Integer, nullable=False)
     position_end = Column(Integer, nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=_utcnow, index=True)
     
     # Relationships
     message = relationship("ChatMessage", back_populates="violations")
