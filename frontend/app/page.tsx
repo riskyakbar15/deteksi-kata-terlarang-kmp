@@ -95,20 +95,34 @@ export default function HomePage() {
   };
 
   const highlightViolations = (text: string, violations: DetectionResult[]) => {
-    if (!violations.length) return text;
+    // Escape HTML so user-supplied text can never inject markup (XSS).
+    const escapeHtml = (value: string) =>
+      value
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
 
-    // Sort violations by position (reverse) to replace from end
+    if (!violations.length) return escapeHtml(text);
+
+    // Sort violations by position (ascending) and build the output from the
+    // original text segments, escaping each segment individually.
     const sorted = [...violations].sort(
-      (a, b) => b.position_start - a.position_start,
+      (a, b) => a.position_start - b.position_start,
     );
 
-    let result = text;
+    let result = "";
+    let cursor = 0;
     for (const v of sorted) {
-      const before = result.slice(0, v.position_start);
-      const word = result.slice(v.position_start, v.position_end);
-      const after = result.slice(v.position_end);
-      result = `${before}<mark className="highlight-violation">${word}</mark>${after}`;
+      // Skip malformed or overlapping ranges defensively.
+      if (v.position_start < cursor) continue;
+      result += escapeHtml(text.slice(cursor, v.position_start));
+      const word = escapeHtml(text.slice(v.position_start, v.position_end));
+      result += `<mark class="highlight-violation">${word}</mark>`;
+      cursor = v.position_end;
     }
+    result += escapeHtml(text.slice(cursor));
 
     return result;
   };
