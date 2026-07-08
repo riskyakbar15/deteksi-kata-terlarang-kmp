@@ -1,5 +1,7 @@
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session, selectinload
+from sqlalchemy import func
+from threading import Lock
 from typing import Optional
 from math import ceil
 
@@ -18,9 +20,33 @@ from app.utils.security import get_current_admin_user
 
 router = APIRouter(prefix="/api/chat", tags=["Chat"])
 
+# Process-wide detector cache. Rebuilt only when the set of active forbidden
+# words changes, detected via a lightweight signature query.
+_detector_cache: dict = {"signature": None, "detector": None}
+_cache_lock = Lock()
+
 
 def get_detector(db: Session) -> WordDetector:
-    """Get word detector with current forbidden words from database"""
+    """
+    Get a word detector for the current active forbidden words.
+
+    The detector (and its precomputed LPS arrays) is cached across requests and
+    only rebuilt when the active words change. The cache signature is derived
+    from the number of active words and the most recent update timestamp, so
+    additions, edits, deletions, and activation toggles all invalidate it.
+    """
+    signature = db.query(
+        func.count(ForbiddenWord.id),
+        func.max(ForbiddenWord.updated_at),
+    ).filter(ForbiddenWord.is_active == True).one()
+
+    with _cache_lock:
+        if (
+            _detector_cache["detector"] is not None
+            and _detector_cache["signature"] == signature
+        ):
+            return _detector_cache["detector"]
+
     words = db.query(ForbiddenWord).filter(ForbiddenWord.is_active == True).all()
     forbidden_words = [
         {
@@ -31,7 +57,13 @@ def get_detector(db: Session) -> WordDetector:
         }
         for w in words
     ]
-    return WordDetector(forbidden_words)
+    detector = WordDetector(forbidden_words)
+
+    with _cache_lock:
+        _detector_cache["signature"] = signature
+        _detector_cache["detector"] = detector
+
+    return detector
 
 
 @router.post("/validate", response_model=ValidationResponse)

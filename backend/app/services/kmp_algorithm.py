@@ -60,7 +60,7 @@ class KMPMatcher:
         return lps
     
     @staticmethod
-    def search(text: str, pattern: str, case_insensitive: bool = True) -> List[Tuple[int, int]]:
+    def search(text: str, pattern: str, case_insensitive: bool = True, lps: List[int] = None) -> List[Tuple[int, int]]:
         """
         Search for all occurrences of pattern in text using KMP algorithm.
         
@@ -68,6 +68,8 @@ class KMPMatcher:
             text: The text to search in
             pattern: The pattern to search for
             case_insensitive: Whether to perform case-insensitive matching
+            lps: Optional precomputed LPS array for the (already case-normalized)
+                pattern. Pass this to avoid recomputing it on every call.
             
         Returns:
             List of tuples (start_index, end_index) for each match found
@@ -86,8 +88,9 @@ class KMPMatcher:
         n = len(text_search)
         m = len(pattern_search)
         
-        # Compute LPS array for the pattern
-        lps = KMPMatcher.compute_lps(pattern_search)
+        # Compute LPS array for the pattern (unless one was supplied)
+        if lps is None:
+            lps = KMPMatcher.compute_lps(pattern_search)
         
         matches = []
         i = 0  # Index for text

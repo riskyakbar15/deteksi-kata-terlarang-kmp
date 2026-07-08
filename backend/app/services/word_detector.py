@@ -42,10 +42,23 @@ class WordDetector:
         self.forbidden_words = forbidden_words or []
         self.word_boundary = word_boundary
         self.matcher = KMPMatcher()
+        self._lps_cache: Dict[str, List[int]] = {}
+        self._build_lps_cache()
+
+    def _build_lps_cache(self) -> None:
+        """Precompute the LPS array for each forbidden word once."""
+        self._lps_cache = {}
+        for fw in self.forbidden_words:
+            word = fw.get("word", "")
+            if word:
+                key = word.lower()
+                if key not in self._lps_cache:
+                    self._lps_cache[key] = self.matcher.compute_lps(key)
 
     def set_forbidden_words(self, forbidden_words: List[Dict[str, Any]]):
         """Update the list of forbidden words"""
         self.forbidden_words = forbidden_words
+        self._build_lps_cache()
 
     @staticmethod
     def _is_word_char(char: str) -> bool:
@@ -97,8 +110,11 @@ class WordDetector:
             if not word:
                 continue
             
-            # Use KMP algorithm to find all occurrences
-            matches = self.matcher.search(text, word, case_insensitive=True)
+            # Use KMP algorithm to find all occurrences (reusing cached LPS)
+            matches = self.matcher.search(
+                text, word, case_insensitive=True,
+                lps=self._lps_cache.get(word.lower())
+            )
             
             for start, end in matches:
                 # Skip matches that are part of a larger word (e.g. "las" in "kelas")
