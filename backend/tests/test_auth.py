@@ -108,3 +108,10 @@ class TestRateLimit:
         assert statuses[:5] == [401, 401, 401, 401, 401]
         assert statuses[5] == 429
 
+
+class TestHealth:
+    def test_health_reports_database_connected(self, client):
+        response = client.get("/health")
+        assert response.status_code == 200
+        assert response.json() == {"status": "healthy", "database": "connected"}
+
