@@ -25,6 +25,11 @@ class Settings(BaseSettings):
     # CORS
     CORS_ORIGINS: list = ["http://localhost:3000", "http://127.0.0.1:3000"]
 
+    # Default admin account (used only by the seed script)
+    DEFAULT_ADMIN_USERNAME: str = "admin"
+    DEFAULT_ADMIN_EMAIL: str = "admin@example.com"
+    DEFAULT_ADMIN_PASSWORD: str = "admin123"
+
     model_config = SettingsConfigDict(env_file=".env", case_sensitive=True)
 
     def model_post_init(self, __context) -> None:

@@ -18,6 +18,7 @@ from app.models.user import User
 from app.models.forbidden_word import ForbiddenWord
 from app.utils.security import get_password_hash
 from app.seeds.data import FORBIDDEN_WORDS_DATA
+from app.config import settings
 
 
 def seed_database():
@@ -34,20 +35,22 @@ def seed_database():
         # ==================== Seed Admin User ====================
         print("\n👤 Seeding admin user...")
         
-        existing_admin = db.query(User).filter(User.username == "admin").first()
+        existing_admin = db.query(User).filter(
+            User.username == settings.DEFAULT_ADMIN_USERNAME
+        ).first()
         
         if not existing_admin:
             admin_user = User(
-                username="admin",
-                email="admin@example.com",
-                hashed_password=get_password_hash("admin123"),
+                username=settings.DEFAULT_ADMIN_USERNAME,
+                email=settings.DEFAULT_ADMIN_EMAIL,
+                hashed_password=get_password_hash(settings.DEFAULT_ADMIN_PASSWORD),
                 is_admin=True,
                 is_active=True,
                 must_change_password=True  # Force password change on first login
             )
             db.add(admin_user)
             db.commit()
-            print("   ✅ Admin user created (username: admin, password: admin123)")
+            print(f"   ✅ Admin user created (username: {settings.DEFAULT_ADMIN_USERNAME})")
             print("   ⚠️  Password change required on first login!")
         else:
             print("   ℹ️  Admin user already exists, skipping...")
